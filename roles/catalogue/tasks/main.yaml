@@ -11,6 +11,7 @@
   ansible.builtin.copy:
     src: mongo.repo
     dest: /etc/yum.repos.d/mongo.repo
+    
 - name: install mongodb client
   ansible.builtin.package:
     name: mongodb-mongosh 
@@ -31,5 +32,5 @@
 
 - name: restart the service
   ansible.builtin.import_role:
-        name: common
-        tasks_from: system-setup.yaml
+      name: common
+      tasks_from: system-setup.yaml
