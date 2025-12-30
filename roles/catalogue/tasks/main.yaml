@@ -1,0 +1,35 @@
+- name: app-setup
+  ansible.builtin.import_role:
+        name: common
+        tasks_from: app-setup.yaml
+- name: install nodejs
+  ansible.builtin.import_role:
+        name: common
+        tasks_from: nodejs.yaml
+
+- name: Copy mongo repo file
+  ansible.builtin.copy:
+    src: mongo.repo
+    dest: /etc/yum.repos.d/mongo.repo
+- name: install mongodb client
+  ansible.builtin.package:
+    name: mongodb-mongosh 
+    state: present
+
+- name: connect to mongodb client
+  ansible.builtin.command: mongosh mongodb.daws86s.help --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+  register: catalogue_output 
+
+- name: print catalogue output 
+  ansible.builtin.debug:
+    msg: "{{ catalogue_output }}"
+  
+
+- name: load products in to mongodb
+  ansible.builtin.shell: mongosh --host mongodb.daws86s.help </app/db/master-data.js
+  when: catalogue_output .stdout | int < 0 
+
+- name: restart the service
+  ansible.builtin.import_role:
+        name: common
+        tasks_from: system-setup.yaml

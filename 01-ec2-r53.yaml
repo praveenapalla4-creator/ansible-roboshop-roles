@@ -1,0 +1,68 @@
+- name:  carete ec2 and r53
+  hosts: local
+  connection: local
+  vars: 
+    ami_id: ami-09c813fb71547fc4f
+    sg_id: sg-0d750c4d0dc1c7758
+    zone_id: "Z0398365AXZ3ME1MH9EB"
+    domain_name: "daws86s.help"
+    # {we can instaces through command line using -e}
+    # instances:
+    # - mongodb
+    # - redis
+    # - mysql
+    # - rabbitmQ
+  tasks:
+  - name: create ec2 instance
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      instance_type: t3.micro
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      tags:
+        Name: "{{ item }}"
+    loop: "{{ instances }}"
+    register: ec2_output
+
+  # - name: print the ec2_output
+  #   ansible.builtin.debug:
+  #     msg: "{{ ec2_output }}"
+
+  # - name: print public ip adress
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].public_ip_address}}"
+  #   loop: "{{ec2_output.results}}"
+
+  # - name: print public ip adress
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].private_ip_address}}"
+  #   loop: "{{ec2_output.results}}"
+
+
+  - name: create r53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ item.item }}.{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
+  
+  - name: create r53 record for frontend
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    when: item.item == "frontend"
+    loop: "{{ ec2_output.results }}"
+  
+ 
+
+  
+
