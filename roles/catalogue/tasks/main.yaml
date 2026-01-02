@@ -18,7 +18,7 @@
     state: present
 
 - name: connect to mongodb client
-  ansible.builtin.command: mongosh mongodb.daws86s.help --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+  ansible.builtin.command: mongosh {{ MONGODB_HOST }} --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
   register: catalogue_output 
 
 - name: print catalogue output 
@@ -27,7 +27,7 @@
   
 
 - name: load products in to mongodb
-  ansible.builtin.shell: mongosh --host mongodb.daws86s.help </app/db/master-data.js
+  ansible.builtin.shell: mongosh --host {{ MONGODB_HOST }} </app/db/master-data.js
   when: catalogue_output .stdout | int < 0 
 
 - name: restart the service
