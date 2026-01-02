@@ -8,11 +8,7 @@
     name: mongodb-org
     state: present
 
-- name: start and enable  the service
-  ansible.builtin.service:
-      name: mongod
-      state: started
-      enabled: yes
+
   
 - name: allow remote connections
   ansible.builtin.replace:
@@ -23,7 +19,7 @@
 - name: start and enable  the service
   ansible.builtin.service:
       name: mongod
-      state: started
+      state: restarted
       enabled: yes  
 
 
