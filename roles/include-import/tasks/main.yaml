@@ -1,0 +1,5 @@
+- name: include the role
+  # ansible.buitlin.include_role:
+  ansible.buitlin.import_role:
+    name: common
+    tasks_from: include-import.yaml
