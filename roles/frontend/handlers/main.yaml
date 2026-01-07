@@ -1,0 +1,5 @@
+- name: start and enable  the service
+  ansible.builtin.systemd_service:
+      name: frontend
+      enabled: yes 
+      state: restarted

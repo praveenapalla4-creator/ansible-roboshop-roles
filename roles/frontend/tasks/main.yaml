@@ -1,0 +1,53 @@
+
+  - name: disable nginx previous version
+    ansible.builtin.command: dnf module disable nginx -y
+  
+  - name: disable redis enabled version
+    ansible.builtin.command: dnf module enable nginx:1.24 -y
+  
+  - name: install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+
+  - name: remove the default content
+    ansible.builtin.file:
+      state: absent
+      path: /usr/share/nginx/html/
+  
+  - name: craete app directory
+    ansible.builtin.file:
+     path:  /usr/share/nginx/html/
+     state: directory
+
+  - name: download the application code
+    ansible.builtin.get_url:
+       url: https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip 
+       dest: /tmp/frontend.zip
+
+  - name: unzip the file into app directory
+    ansible.builtin.unarchive:
+      src: /tmp/frontend.zip
+      dest: /usr/share/nginx/html 
+      remote_src: yes
+
+  - name: delete the default content of nginx
+    ansible.builtin.file:
+     path: /etc/nginx/nginx.conf
+     state: absent
+
+  - name: Copy nginx conf e file
+    ansible.builtin.template:
+      src: nginx.conf.j2
+      dest: /etc/nginx/nginx.conf
+    notify: restart nginx
+  # - name: start and enable  the service
+  #   ansible.builtin.systemd_service:
+  #      name: frontend
+  #      enabled: yes 
+  #      state: started #restarted is safe start ayithe restart avthundhi lekapothe starrt avthundhi
+    notify: restarted
+      
+        
+
+  

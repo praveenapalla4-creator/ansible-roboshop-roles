@@ -1,0 +1,9 @@
+MONGODB_HOST: mongodb.daws86s.help
+CART_HOST: cart.daws86s.help
+USER_HOST: user.daws86s.help
+RABBITMQ_HOST: rabbitmq.daws86s.help
+REDIS_HOST: redis.daws86s.help
+CATALOGUE_HOST: catalogue.daws86s.help
+MYSQL_HOST: mysql.daws86s.help
+SHIPPING_HOST: shipping.daws86s.help
+PAYMENT_HOST: payment.daws86s.help
