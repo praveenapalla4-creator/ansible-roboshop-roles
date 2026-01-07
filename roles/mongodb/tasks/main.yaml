@@ -8,7 +8,6 @@
     name: mongodb-org
     state: present
 
-
   
 - name: allow remote connections
   ansible.builtin.replace:
