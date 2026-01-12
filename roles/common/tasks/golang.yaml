@@ -1,0 +1,4 @@
+- name: install depenedecnies
+  ansible.builtin.dnf:
+    name: golang
+    state: present
